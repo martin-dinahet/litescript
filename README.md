@@ -7,6 +7,12 @@ LiteScript is a simple programming language with a syntax close to Rust.
 - It's written in TypeScript (Deno)
 - It compiles to TypeScript (Deno)
 
+## Process
+
+1. Turns source code into tokens
+2. Creates an abstract syntax tree (AST) with the tokens
+3. Walks the AST to generate TypeScript code
+
 ## Features (WIP)
 
 [x] variable declaration
