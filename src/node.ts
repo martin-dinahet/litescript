@@ -46,13 +46,13 @@ export interface use_statement {
 }
 
 export interface if_statement {
-  t: "if statement";
+  t: "if_statement";
   c: expression;
   v: Array<statement>;
 }
 
 export interface else_statement {
-  t: "else statement";
+  t: "else_statement";
   v: Array<statement>;
 }
 
