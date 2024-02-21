@@ -1,0 +1,6 @@
+use std
+
+fn main() => std::res {
+  std::io::write("Hello, World!")
+  return std::res::ok
+}

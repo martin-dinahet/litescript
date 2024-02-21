@@ -1,0 +1,1 @@
+deno run -A main.ts $1 && deno run -A ./out/output.ts/
