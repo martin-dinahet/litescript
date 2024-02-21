@@ -78,6 +78,10 @@ class parser {
         return this.parse_return_statement();
       case "use":
         return this.parse_use_statement();
+      case "if":
+        return this.parse_if_statement();
+      case "else":
+        return this.parse_else_statement();
       default:
         if (this.cursor_as_token().t === "ide") {
           return this.parse_function_call();
@@ -92,9 +96,6 @@ class parser {
     const identifier = this.parse_identifier() as node.identifier;
     const args = new Array<node.argument>();
     this.expect("spe", "(");
-    // while (!this.cursor_equals_to("spe", ")")) {
-    // args.push(this.parse_argument());
-    // }
     while (true) {
       if (this.cursor_equals_to("spe", ")")) {
         break;
@@ -137,6 +138,29 @@ class parser {
     this.expect("key", "use");
     const value = this.parse_identifier();
     return { t: "use_statement", v: value };
+  }
+
+  private parse_if_statement(): node.if_statement {
+    this.expect("key", "if");
+    const condition = this.parse_expression();
+    this.expect("spe", "{");
+    const value = new Array<node.statement>();
+    while (!this.cursor_equals_to("spe", "}")) {
+      value.push(this.parse_statement());
+    }
+    this.expect("spe", "}");
+    return { t: "if_statement", c: condition, v: value };
+  }
+
+  private parse_else_statement(): node.else_statement {
+    this.expect("key", "else");
+    this.expect("spe", "{");
+    const value = new Array<node.statement>();
+    while (!this.cursor_equals_to("spe", "}")) {
+      value.push(this.parse_statement());
+    }
+    this.expect("spe", "}");
+    return { t: "else_statement", v: value };
   }
 
   private parse_expression(): node.expression {

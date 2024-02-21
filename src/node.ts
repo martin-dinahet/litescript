@@ -45,6 +45,17 @@ export interface use_statement {
   v: identifier;
 }
 
+export interface if_statement {
+  t: "if statement";
+  c: expression;
+  v: Array<statement>;
+}
+
+export interface else_statement {
+  t: "else statement";
+  v: Array<statement>;
+}
+
 // expressions
 
 export interface function_call extends expression {

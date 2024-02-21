@@ -60,7 +60,7 @@ class lexer {
   }
 
   private is_keyword(str: string): boolean {
-    return /^fn$|^let$|^return$|^use$/.test(str);
+    return /^fn$|^let$|^return$|^use$|^if$|^else$/.test(str);
   }
 
   private flush_buffer(): void {

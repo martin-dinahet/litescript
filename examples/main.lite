@@ -1,6 +1,10 @@
 use std
 
 fn main() => std::res {
-  std::io::write("Hello, World!")
+  if 1 == 2 {
+    std::io::write("Weird...")
+  } else {
+    std::io::write("That's better!")
+  }
   return std::res::ok
 }

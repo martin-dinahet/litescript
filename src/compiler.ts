@@ -18,6 +18,10 @@ function compile_statement(statement: node.statement): string {
       return compile_return_statement(statement as node.return_statement);
     case "use_statement":
       return compile_use_statement(statement as node.use_statement);
+    case "if_statement":
+      return compile_if_statement(statement as node.if_statement);
+    case "else_statement":
+      return compile_else_statement(statement as node.else_statement);
     case "function_call":
       return compile_function_call(statement as node.function_call);
     default:
@@ -54,6 +58,23 @@ function compile_return_statement(return_statement: node.return_statement): stri
 function compile_use_statement(use_statement: node.use_statement): string {
   const v = compile_identifier(use_statement.v);
   return `import * as ${v} from "../doc/${v}.ts"\n`;
+}
+
+function compile_if_statement(if_statement: node.if_statement): string {
+  const c = compile_expression(if_statement.c);
+  const v = new Array<string>();
+  for (const stmt of if_statement.v) {
+    v.push(compile_statement(stmt));
+  }
+  return `if (${c}){\n${v.join("\n")}\n}`;
+}
+
+function compile_else_statement(else_statement: node.else_statement): string {
+  const v = new Array<string>();
+  for (const stmt of else_statement.v) {
+    v.push(compile_statement(stmt));
+  }
+  return `else {\n${v.join("\n")}\n}`;
 }
 
 function compile_function_call(function_call: node.function_call): string {
