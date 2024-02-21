@@ -82,6 +82,8 @@ class parser {
         return this.parse_if_statement();
       case "else":
         return this.parse_else_statement();
+      case "obj":
+        return this.parse_object_declaration();
       default:
         if (this.cursor_as_token().t === "ide") {
           return this.parse_function_call();
@@ -163,7 +165,42 @@ class parser {
     return { t: "else_statement", v: value };
   }
 
+  private parse_object_declaration(): node.object_declaration {
+    this.expect("key", "obj");
+    const identifier = this.parse_identifier();
+    this.expect("spe", "{");
+    const args = new Array<node.argument>();
+    while (!this.cursor_equals_to("spe", "}")) {
+      args.push(this.parse_argument());
+    }
+    this.expect("spe", "}");
+    return { t: "object_declaration", i: identifier, a: args };
+  }
+
+  private parse_object_reference(): node.object_reference {
+    this.expect("spe", "{");
+    const object_components = new Array<node.object_component>();
+    while (!this.cursor_equals_to("spe", "}")) {
+      object_components.push(this.parse_object_component());
+    }
+    this.expect("spe", "}");
+    return { t: "object_reference", v: object_components };
+  }
+
+  private parse_object_component(): node.object_component {
+    const identifier = this.parse_identifier();
+    this.expect("spe", ":");
+    const value = this.parse_expression();
+    if (this.cursor_equals_to("spe", ",")) {
+      this.expect("spe", ",");
+    }
+    return { t: "object_component", i: identifier, v: value };
+  }
+
   private parse_expression(): node.expression {
+    if (this.cursor_equals_to("spe", "{")) {
+      return this.parse_object_reference();
+    }
     return this.parse_comparator_expression();
   }
 

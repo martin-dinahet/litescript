@@ -22,6 +22,8 @@ function compile_statement(statement: node.statement): string {
       return compile_if_statement(statement as node.if_statement);
     case "else_statement":
       return compile_else_statement(statement as node.else_statement);
+    case "object_declaration":
+      return compile_object_declaration(statement as node.object_declaration);
     case "function_call":
       return compile_function_call(statement as node.function_call);
     default:
@@ -33,14 +35,14 @@ function compile_function_declaration(function_declaration: node.function_declar
   const i = compile_identifier(function_declaration.i);
   const a = new Array<string>();
   for (const arg of function_declaration.a) {
-    a.push(`${arg.v}: ${arg.a}`);
+    a.push(`${compile_identifier(arg.v)}: ${compile_identifier(arg.a)}`);
   }
   const r = compile_identifier(function_declaration.r);
   const b = new Array<string>();
   for (const stmt of function_declaration.b) {
     b.push(compile_statement(stmt));
   }
-  return `const ${i} = (${a.join(", ")}): ${r} => {\n${b.join("\n")}\n}`;
+  return `const ${i} = (${a.join(", ")}): ${r} => {\n${b.join("\n")}\n}\n`;
 }
 
 function compile_variable_declaration(variable_declaration: node.variable_declaration): string {
@@ -77,6 +79,29 @@ function compile_else_statement(else_statement: node.else_statement): string {
   return `else {\n${v.join("\n")}\n}`;
 }
 
+function compile_object_declaration(object_declaration: node.object_declaration): string {
+  const i = compile_identifier(object_declaration.i);
+  const a = new Array<string>();
+  for (const arg of object_declaration.a) {
+    a.push(`${compile_identifier(arg.v)}: ${compile_identifier(arg.a)}`);
+  }
+  return `interface ${i} {\n${a.join("\n")}\n}\n`;
+}
+
+function compile_object_reference(object_reference: node.object_reference): string {
+  const v = new Array<string>();
+  for (const object_component of object_reference.v) {
+    v.push(compile_object_component(object_component));
+  }
+  return `{ ${v.join(", ")} }`;
+}
+
+function compile_object_component(object_component: node.object_component): string {
+  const i = compile_identifier(object_component.i);
+  const v = compile_expression(object_component.v);
+  return `${i}: ${v}`;
+}
+
 function compile_function_call(function_call: node.function_call): string {
   const i = compile_identifier(function_call.i);
   const a = new Array<string>();
@@ -96,6 +121,8 @@ function compile_expression(expression: node.expression): string {
       return compile_binary_operation(expression as node.binary_operation);
     case "identifier":
       return compile_identifier(expression as node.identifier);
+    case "object_reference":
+      return compile_object_reference(expression as node.object_reference);
     case "num_literal":
       return compile_literal(expression as node.literal_expression);
     case "str_literal":

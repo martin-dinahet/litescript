@@ -18,9 +18,15 @@ export interface argument extends node {
   a: identifier;
 }
 
+export interface object_component extends node {
+  t: "object_component";
+  i: identifier;
+  v: expression;
+}
+
 // statements
 
-export interface function_declaration {
+export interface function_declaration extends statement {
   t: "function_declaration";
   i: identifier;
   a: Array<argument>;
@@ -28,32 +34,43 @@ export interface function_declaration {
   b: Array<statement>;
 }
 
-export interface variable_declaration {
+export interface variable_declaration extends statement {
   t: "variable_declaration";
   i: identifier;
   a: identifier;
   v: expression;
 }
 
-export interface return_statement {
+export interface return_statement extends statement {
   t: "return_statement";
   v: expression;
 }
 
-export interface use_statement {
+export interface use_statement extends statement {
   t: "use_statement";
   v: identifier;
 }
 
-export interface if_statement {
+export interface if_statement extends statement {
   t: "if_statement";
   c: expression;
   v: Array<statement>;
 }
 
-export interface else_statement {
+export interface else_statement extends statement {
   t: "else_statement";
   v: Array<statement>;
+}
+
+export interface object_declaration extends statement {
+  t: "object_declaration";
+  i: identifier;
+  a: Array<argument>;
+}
+
+export interface object_reference extends expression {
+  t: "object_reference";
+  v: Array<object_component>;
 }
 
 // expressions
