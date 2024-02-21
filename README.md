@@ -15,13 +15,13 @@ LiteScript is a simple programming language with a syntax close to Rust.
 
 ## Features (WIP)
 
-[x] variable declaration
-[x] variable usage
-[x] binary operation
-[x] function declaration
-[x] function call
-[x] libraries
-[ ] structs
+- [x] variable declaration
+- [x] variable usage
+- [x] binary operation
+- [x] function declaration
+- [x] function call
+- [x] libraries
+- [o] structs
 
 ## Demo & grammar
 
