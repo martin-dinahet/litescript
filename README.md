@@ -21,7 +21,7 @@ LiteScript is a simple programming language with a syntax close to Rust.
 - [x] function declaration
 - [x] function call
 - [x] libraries
-- [ ] struct
+- [x] object (interface equivalents)
 - [x] if-else statement
 
 ## Demo & grammar
@@ -52,6 +52,25 @@ if a == b {
   std::io::write("???")
 } else {
   std::io::write("Ok, that's better.")
+}
+```
+
+This is how you create and use the `obj` structure:
+
+```
+obj user {
+  username: str
+  password: str
+}
+
+fn new_user(username: string, password: string) => user {
+  return { username: username, password: password }
+}
+
+fn main() => std::res {
+  let user1: user = new_user("John Doe", "password123")
+  std::io::write(user1::name, user1::password)
+  return std::res::ok
 }
 ```
 
