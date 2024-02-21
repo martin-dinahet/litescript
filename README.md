@@ -21,7 +21,8 @@ LiteScript is a simple programming language with a syntax close to Rust.
 - [x] function declaration
 - [x] function call
 - [x] libraries
-- [ ] structs
+- [ ] struct
+- [ ] if-else statement
 
 ## Demo & grammar
 
