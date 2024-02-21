@@ -37,6 +37,24 @@ fn main() => std::res {
 }
 ```
 
+This is a demo of declaring variables:
+
+```
+let a: num = 0
+let b: num = 1
+let c: num = a + b
+```
+
+This is a demo of an `if-else` statement:
+
+```
+if a == b {
+  std::io::write("???")
+} else {
+  std::io::write("Ok, that's better.")
+}
+```
+
 ## Info
 
 This is a toy programming language I made for my personal enjoyment. It is not made for real usage and is subject to change.
