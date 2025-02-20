@@ -52,7 +52,7 @@ export const Lexer: LexerTypeDefinition = ({ code }) => {
 
   const dumpString = () => {
     if (string.length >= 1) {
-      tokens.push({ value: buffer } as StringLiteralToken);
+      tokens.push({ value: buffer, debugType: "StringLiteralToken" } as StringLiteralToken);
       string = "";
     }
   };
@@ -60,17 +60,17 @@ export const Lexer: LexerTypeDefinition = ({ code }) => {
   const dumpBuffer = () => {
     if (buffer.length >= 1) {
       if (/^-?\d+/.test(buffer)) {
-        tokens.push({ value: buffer } as NumberLiteralToken);
+        tokens.push({ value: buffer, debugType: "NumberLiteralToken" } as NumberLiteralToken);
       } else if (buffer === "const") {
-        tokens.push({ raw: buffer } as ConstKeywordToken);
+        tokens.push({ raw: buffer, debugType: "ConstKeywordToken" } as ConstKeywordToken);
       } else if (buffer === "return") {
-        tokens.push({ raw: buffer } as ReturnKeywordToken);
+        tokens.push({ raw: buffer, debugType: "ReturnKeywordToken" } as ReturnKeywordToken);
       } else if (buffer === "if") {
-        tokens.push({ raw: buffer } as IfKeywordToken);
+        tokens.push({ raw: buffer, debugType: "IfKeywordToken" } as IfKeywordToken);
       } else if (buffer === "else") {
-        tokens.push({ raw: buffer } as ElseKeywordToken);
+        tokens.push({ raw: buffer, debugType: "ElseKeywordToken" } as ElseKeywordToken);
       } else {
-        tokens.push({ value: buffer } as IdentifierToken);
+        tokens.push({ value: buffer, debugType: "IdentifierToken" } as IdentifierToken);
       }
     }
     buffer = "";
@@ -114,157 +114,163 @@ export const Lexer: LexerTypeDefinition = ({ code }) => {
           case "+": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "+" } as AddOperationToken);
+            tokens.push({ raw: "+", debugType: "AddOperationToken" } as AddOperationToken);
             continue;
           }
           case "-": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "-" } as SubOperationToken);
+            tokens.push({ raw: "-", debugType: "SubOperationToken" } as SubOperationToken);
             continue;
           }
           case "*": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "*" } as MulOperationToken);
+            tokens.push({ raw: "*", debugType: "MulOperationToken" } as MulOperationToken);
             continue;
           }
           case "/": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "/" } as DivOperationToken);
+            tokens.push({ raw: "/", debugType: "DivOperationToken" } as DivOperationToken);
             continue;
           }
           case "%": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "%" } as PercentOperationToken);
+            tokens.push({ raw: "%", debugType: "PercentOperationToken" } as PercentOperationToken);
             continue;
           }
           case "(": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "(" } as OpenParenthesesToken);
+            tokens.push({ raw: "(", debugType: "OpenParenthesesToken" } as OpenParenthesesToken);
             continue;
           }
           case ")": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: ")" } as CloseParenthesesToken);
+            tokens.push({ raw: ")", debugType: "CloseParenthesesToken" } as CloseParenthesesToken);
             continue;
           }
           case "[": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "[" } as OpenBracketsToken);
+            tokens.push({ raw: "[", debugType: "OpenBracketsToken" } as OpenBracketsToken);
             continue;
           }
           case "]": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "]" } as CloseBracketsToken);
+            tokens.push({ raw: "]", debugType: "CloseBracketsToken" } as CloseBracketsToken);
             continue;
           }
           case "{": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "{" } as OpenCurlyBracketsToken);
+            tokens.push({
+              raw: "{",
+              debugType: "OpenCurlyBracketsToken",
+            } as OpenCurlyBracketsToken);
             continue;
           }
           case "}": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "}" } as CloseCurlyBracketsToken);
+            tokens.push({
+              raw: "}",
+              debugType: "CloseCurlyBracketsToken",
+            } as CloseCurlyBracketsToken);
             continue;
           }
           case ",": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "," } as CommaToken);
+            tokens.push({ raw: ",", debugType: "CommaToken" } as CommaToken);
             continue;
           }
           case ":": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: ":" } as ColonToken);
+            tokens.push({ raw: ":", debugType: "ColonToken" } as ColonToken);
             continue;
           }
           case ";": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: ";" } as SemiColonToken);
+            tokens.push({ raw: ";", debugType: "SemiColonToken" } as SemiColonToken);
             continue;
           }
           case ".": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "." } as PeriodToken);
+            tokens.push({ raw: ".", debugType: "PeriodToken" } as PeriodToken);
             continue;
           }
           case "<": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "<" } as LessThanToken);
+            tokens.push({ raw: "<", debugType: "LessThanToken" } as LessThanToken);
             continue;
           }
           case ">": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: ">" } as GreaterThanToken);
+            tokens.push({ raw: ">", debugType: "GreaterThanToken" } as GreaterThanToken);
             continue;
           }
           case "=": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "=" } as EqualToken);
+            tokens.push({ raw: "=", debugType: "EqualToken" } as EqualToken);
             continue;
           }
           case "?": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "?" } as QuestionMarkToken);
+            tokens.push({ raw: "?", debugType: "QuestionMarkToken" } as QuestionMarkToken);
             continue;
           }
           case "!": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "!" } as ExclamationMarkToken);
+            tokens.push({ raw: "!", debugType: "ExclamationMarkToken" } as ExclamationMarkToken);
             continue;
           }
           case "&": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "&" } as AmperstandToken);
+            tokens.push({ raw: "&", debugType: "AmperstandToken" } as AmperstandToken);
             continue;
           }
           case "#": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "#" } as PoundToken);
+            tokens.push({ raw: "#", debugType: "PoundToken" } as PoundToken);
             continue;
           }
           case "@": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "@" } as AtToken);
+            tokens.push({ raw: "@", debugType: "AtToken" } as AtToken);
             continue;
           }
           case "$": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "$" } as DollarToken);
+            tokens.push({ raw: "$", debugType: "DollarToken" } as DollarToken);
             continue;
           }
           case "_": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "_" } as UnderscoreToken);
+            tokens.push({ raw: "_", debugType: "UnderscoreToken" } as UnderscoreToken);
             continue;
           }
           case "|": {
             dumpBuffer();
             eat();
-            tokens.push({ raw: "|" } as PipeToken);
+            tokens.push({ raw: "|", debugType: "PipeToken" } as PipeToken);
             continue;
           }
           default: {

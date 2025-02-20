@@ -1,5 +1,5 @@
 export type Token = {
-  //
+  debugType: "Token";
 };
 
 /* */
@@ -33,7 +33,7 @@ export type BooleanLiteralToken = LiteralToken & {
 /* */
 
 export type KeywordToken = Token & {
-  //
+  debugType: "KeywordToken";
 };
 
 export type ConstKeywordToken = KeywordToken & {
@@ -59,7 +59,7 @@ export type ElseKeywordToken = KeywordToken & {
 /* */
 
 export type OperationToken = Token & {
-  //
+  debugType: "OperationToken";
 };
 
 export type AddOperationToken = OperationToken & {
@@ -90,7 +90,7 @@ export type PercentOperationToken = OperationToken & {
 /* */
 
 export type SymbolToken = Token & {
-  //
+  debugType: "SymbolToken";
 };
 
 export type OpenParenthesesToken = SymbolToken & {

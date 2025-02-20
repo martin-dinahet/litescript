@@ -1,3 +1,4 @@
+import { Token } from "#/token";
 import { Lexer } from "./lexer";
 
 const source = `
@@ -6,4 +7,4 @@ const source = `
   };
 `;
 
-console.log(Lexer({ code: source }));
+console.log(Lexer({ code: source }).map((token: Token) => token.debugType));
