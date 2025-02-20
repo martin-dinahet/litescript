@@ -37,7 +37,7 @@ type LexerTypeDefinition = (params: { code: string }) => Array<Token>;
 export const Lexer: LexerTypeDefinition = ({ code }) => {
   const source: Array<string> = code.split("");
   const tokens: Array<Token> = [];
-  let cursor: string | null = null;
+  let cursor: string | null = source[0];
   let buffer: string = "";
   let string: string = "";
   let quotes: boolean = false;
@@ -51,23 +51,27 @@ export const Lexer: LexerTypeDefinition = ({ code }) => {
   };
 
   const dumpString = () => {
-    tokens.push({ value: buffer } as StringLiteralToken);
-    string = "";
+    if (string.length >= 1) {
+      tokens.push({ value: buffer } as StringLiteralToken);
+      string = "";
+    }
   };
 
   const dumpBuffer = () => {
-    if (/^-?\d+/.test(buffer)) {
-      tokens.push({ value: buffer } as NumberLiteralToken);
-    } else if (buffer === "const") {
-      tokens.push({ raw: buffer } as ConstKeywordToken);
-    } else if (buffer === "return") {
-      tokens.push({ raw: buffer } as ReturnKeywordToken);
-    } else if (buffer === "if") {
-      tokens.push({ raw: buffer } as IfKeywordToken);
-    } else if (buffer === "else") {
-      tokens.push({ raw: buffer } as ElseKeywordToken);
-    } else {
-      tokens.push({ value: buffer } as IdentifierToken);
+    if (buffer.length >= 1) {
+      if (/^-?\d+/.test(buffer)) {
+        tokens.push({ value: buffer } as NumberLiteralToken);
+      } else if (buffer === "const") {
+        tokens.push({ raw: buffer } as ConstKeywordToken);
+      } else if (buffer === "return") {
+        tokens.push({ raw: buffer } as ReturnKeywordToken);
+      } else if (buffer === "if") {
+        tokens.push({ raw: buffer } as IfKeywordToken);
+      } else if (buffer === "else") {
+        tokens.push({ raw: buffer } as ElseKeywordToken);
+      } else {
+        tokens.push({ value: buffer } as IdentifierToken);
+      }
     }
     buffer = "";
   };
@@ -85,12 +89,28 @@ export const Lexer: LexerTypeDefinition = ({ code }) => {
       continue;
     }
     if (cursor !== '"' && quotes) {
-      string += eat();
+      string += cursor;
+      eat();
       continue;
     }
     if (cursor !== '"' && !quotes) {
       if (cursor !== null) {
         switch (cursor) {
+          case "\n": {
+            dumpBuffer();
+            eat();
+            continue;
+          }
+          case "\t": {
+            dumpBuffer();
+            eat();
+            continue;
+          }
+          case " ": {
+            dumpBuffer();
+            eat();
+            continue;
+          }
           case "+": {
             dumpBuffer();
             eat();
@@ -248,7 +268,8 @@ export const Lexer: LexerTypeDefinition = ({ code }) => {
             continue;
           }
           default: {
-            buffer += eat();
+            buffer += cursor;
+            eat();
             continue;
           }
         }
