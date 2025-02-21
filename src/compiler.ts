@@ -10,38 +10,12 @@ import {
   ProgramASTNode,
   ReturnStatementASTNode,
   StringLiteralASTNode,
+  StructDeclarationASTNode,
   VariableDeclarationASTNode,
 } from "#/node";
 
 type CompilerTypeDefinition = (params: { programASTNode: ProgramASTNode }) => Array<string>;
 export const Compiler: CompilerTypeDefinition = ({ programASTNode }) => {
-  const visitNode = (node: ASTNode): Array<string> => {
-    switch (node.debugType) {
-      case "ProgramASTNode":
-        return visitProgramASTNode(node);
-      case "IdentifierASTNode":
-        return visitIdentifierASTNode(node);
-      case "NumberLiteralASTNode":
-        return visitNumberLiteralASTNode(node);
-      case "StringLiteralASTNode":
-        return visitStringLiteralASTNode(node);
-      case "BooleanLiteralASTNode":
-        return visitBooleanLiteralASTNode(node);
-      case "BinaryExpressionASTNode":
-        return visitBinaryExpressionASTNode(node);
-      case "VariableDeclarationASTNode":
-        return visitVariableDeclarationASTNode(node);
-      case "ReturnStatementASTNode":
-        return visitReturnStatementASTNode(node);
-      case "ConditionalStatementASTNode":
-        return visitConditionalStatementASTNode(node);
-      case "FunctionExpressionASTNode":
-        return visitFunctionExpressionASTNode(node);
-      case "FunctionCallASTNode":
-        return visitFunctionCallASTNode(node);
-    }
-  };
-
   const visitProgramASTNode = (node: ProgramASTNode): Array<string> => {
     return node.body.flatMap((statement: ASTNode) => visitNode(statement));
   };
@@ -55,7 +29,7 @@ export const Compiler: CompilerTypeDefinition = ({ programASTNode }) => {
   };
 
   const visitStringLiteralASTNode = (node: StringLiteralASTNode): Array<string> => {
-    return [`"${node.value}`];
+    return [`"${node.value}"`];
   };
 
   const visitBooleanLiteralASTNode = (node: BooleanLiteralASTNode): Array<string> => {
@@ -104,6 +78,45 @@ export const Compiler: CompilerTypeDefinition = ({ programASTNode }) => {
     const identifier = visitNode(node.identifier);
     const args = node.arguments.map((arg) => visitNode(arg).join(" ")).join(", ");
     return [`${identifier.join("")}(${args})`];
+  };
+
+  const visitStrucDeclarationASTNode = (node: StructDeclarationASTNode): Array<string> => {
+    const identifier = visitNode(node.identifier);
+    const properties = node.properties.map((property) => visitNode(property).join(" "));
+    return [
+      `function ${identifier}(${properties.join(", ")}) {`,
+      properties.map((property) => `this.${property} = ${property};`).join("\n"),
+      "}",
+    ];
+  };
+
+  const visitNode = (node: ASTNode): Array<string> => {
+    switch (node.debugType) {
+      case "ProgramASTNode":
+        return visitProgramASTNode(node);
+      case "IdentifierASTNode":
+        return visitIdentifierASTNode(node);
+      case "NumberLiteralASTNode":
+        return visitNumberLiteralASTNode(node);
+      case "StringLiteralASTNode":
+        return visitStringLiteralASTNode(node);
+      case "BooleanLiteralASTNode":
+        return visitBooleanLiteralASTNode(node);
+      case "BinaryExpressionASTNode":
+        return visitBinaryExpressionASTNode(node);
+      case "VariableDeclarationASTNode":
+        return visitVariableDeclarationASTNode(node);
+      case "ReturnStatementASTNode":
+        return visitReturnStatementASTNode(node);
+      case "ConditionalStatementASTNode":
+        return visitConditionalStatementASTNode(node);
+      case "FunctionExpressionASTNode":
+        return visitFunctionExpressionASTNode(node);
+      case "FunctionCallASTNode":
+        return visitFunctionCallASTNode(node);
+      case "StructDeclarationASTNode":
+        return visitStrucDeclarationASTNode(node);
+    }
   };
 
   return visitNode(programASTNode);

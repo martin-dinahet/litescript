@@ -1,4 +1,4 @@
-import { AddOperationToken, BooleanLiteralToken } from "#/token";
+import { AddOperationToken, BooleanLiteralToken, StructKeywordToken } from "#/token";
 import { AmperstandToken } from "#/token";
 import { AtToken } from "#/token";
 import { CloseBracketsToken } from "#/token";
@@ -65,6 +65,8 @@ export const Lexer: LexerTypeDefinition = ({ code }) => {
         tokens.push({ raw: buffer, debugType: "IfKeywordToken" } as IfKeywordToken);
       } else if (buffer === "else") {
         tokens.push({ raw: buffer, debugType: "ElseKeywordToken" } as ElseKeywordToken);
+      } else if (buffer === "struct") {
+        tokens.push({ raw: buffer, debugType: "StructKeywordToken" } as StructKeywordToken);
       } else if (buffer === "true") {
         tokens.push({ value: buffer, debugType: "BooleanLiteralToken" } as BooleanLiteralToken);
       } else if (buffer === "false") {

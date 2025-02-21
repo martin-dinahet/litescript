@@ -38,7 +38,8 @@ export type KeywordToken =
   | ConstKeywordToken //
   | ReturnKeywordToken //
   | IfKeywordToken //
-  | ElseKeywordToken; //
+  | ElseKeywordToken //
+  | StructKeywordToken; //
 
 export type ConstKeywordToken = {
   raw: "const";
@@ -58,6 +59,11 @@ export type IfKeywordToken = {
 export type ElseKeywordToken = {
   raw: "else";
   debugType: "ElseKeywordToken";
+};
+
+export type StructKeywordToken = {
+  raw: "struct";
+  debugType: "StructKeywordToken";
 };
 
 /* */

@@ -151,6 +151,31 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
         }
       }
 
+      case "StructKeywordToken": {
+        eatSpecific(["StructKeywordToken"]);
+        const identifier: IdentifierASTNode = {
+          debugType: "IdentifierASTNode",
+          value: (eatSpecific(["IdentifierToken"]) as IdentifierToken).value,
+        };
+        eatSpecific(["OpenCurlyBracketsToken"]);
+        const properties: Array<IdentifierASTNode> = [];
+        while (peek()?.debugType !== "CloseCurlyBracketsToken") {
+          const property: IdentifierASTNode = {
+            debugType: "IdentifierASTNode",
+            value: (eatSpecific(["IdentifierToken"]) as IdentifierToken).value,
+          };
+          properties.push(property);
+          eatSpecific(["SemiColonToken"]);
+        }
+        eatSpecific(["CloseCurlyBracketsToken"]);
+        eatSpecific(["SemiColonToken"]);
+        return {
+          debugType: "StructDeclarationASTNode",
+          identifier,
+          properties,
+        };
+      }
+
       default: {
         throw new Error(`${token.debugType} Not implemented`);
       }

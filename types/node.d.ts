@@ -7,7 +7,8 @@ export type ASTNode =
   | ReturnStatementASTNode //
   | ConditionalStatementASTNode //
   | FunctionExpressionASTNode //
-  | FunctionCallASTNode;
+  | FunctionCallASTNode //
+  | StructDeclarationASTNode; //
 
 /* */
 
@@ -82,4 +83,10 @@ export type FunctionCallASTNode = {
   debugType: "FunctionCallASTNode";
   identifier: IdentifierASTNode;
   arguments: Array<ASTNode>;
+};
+
+export type StructDeclarationASTNode = {
+  debugType: "StructDeclarationASTNode";
+  identifier: IdentifierASTNode;
+  properties: Array<IdentifierASTNode>;
 };
