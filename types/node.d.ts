@@ -51,7 +51,7 @@ export type BinaryExpressionASTNode = {
   debugType: "BinaryExpressionASTNode";
   left: ASTNode;
   right: ASTNode;
-  operator: "+" | "-" | "*" | "/" | "%" | "<" | ">" | ">=" | "<=" | "==" | "&&" | "||";
+  operator: "+" | "-" | "*" | "/" | "%" | "<" | ">" | ">=" | "<=" | "==" | "!=" | "&&" | "||";
 };
 
 export type VariableDeclarationASTNode = {

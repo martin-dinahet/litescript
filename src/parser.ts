@@ -176,28 +176,22 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
         break;
       }
       case "IdentifierToken": {
-        // Check if it's a function call (IdentifierToken followed by OpenParenthesesToken)
         if (peek()?.debugType === "OpenParenthesesToken") {
           const identifier: IdentifierASTNode = {
             debugType: "IdentifierASTNode",
             value: (token as IdentifierToken).value,
           };
-          eatSpecific(["IdentifierToken"]); // Eat the identifier token
-          eatSpecific(["OpenParenthesesToken"]); // Eat the opening parentheses
-
+          eatSpecific(["OpenParenthesesToken"]);
           const args: ASTNode[] = [];
-          // Parse the arguments inside the parentheses
           if (peek()?.debugType !== "CloseParenthesesToken") {
             do {
-              args.push(parseExpression()); // Parse each argument
+              args.push(parseExpression());
               if (peek()?.debugType === "CommaToken") {
-                eatSpecific(["CommaToken"]); // Handle the comma between arguments
+                eatSpecific(["CommaToken"]);
               }
             } while (peek()?.debugType !== "CloseParenthesesToken");
           }
-
-          eatSpecific(["CloseParenthesesToken"]); // Eat the closing parentheses
-
+          eatSpecific(["CloseParenthesesToken"]);
           left = {
             debugType: "FunctionCallASTNode",
             identifier,
@@ -230,27 +224,105 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
 
     while (true) {
       let nextToken = peek();
+      if (!nextToken) break;
+
+      // Check for double-token operators first
+      if (nextToken.debugType === "LessThanToken" || nextToken.debugType === "GreaterThanToken") {
+        const firstToken = eat();
+        const secondToken = peek();
+
+        // Check for <= or >=
+        if (secondToken?.debugType === "EqualToken") {
+          eat(); // consume the = token
+          const operator = firstToken.debugType === "LessThanToken" ? "<=" : ">=";
+          const right = parseExpression(precedence + 1);
+          left = {
+            debugType: "BinaryExpressionASTNode",
+            left,
+            right,
+            operator,
+          };
+          continue;
+        } else {
+          // Single token < or >
+          const operator = firstToken.debugType === "LessThanToken" ? "<" : ">";
+          const right = parseExpression(precedence + 1);
+          left = {
+            debugType: "BinaryExpressionASTNode",
+            left,
+            right,
+            operator,
+          };
+          continue;
+        }
+      }
+
+      // Check for == and !=
+      if (nextToken.debugType === "EqualToken" || nextToken.debugType === "ExclamationMarkToken") {
+        const firstToken = eat();
+        const secondToken = peek();
+
+        if (secondToken?.debugType === "EqualToken") {
+          eat(); // consume the = token
+          const operator = firstToken.debugType === "EqualToken" ? "==" : "!=";
+          const right = parseExpression(precedence + 1);
+          left = {
+            debugType: "BinaryExpressionASTNode",
+            left,
+            right,
+            operator,
+          };
+          continue;
+        } else if (firstToken.debugType === "ExclamationMarkToken") {
+          throw new Error("Unexpected token !");
+        }
+      }
+
+      // Check for && and ||
+      if (nextToken.debugType === "AmperstandToken" || nextToken.debugType === "PipeToken") {
+        const firstToken = eat();
+        const secondToken = peek();
+
+        if (
+          (firstToken.debugType === "AmperstandToken" &&
+            secondToken?.debugType === "AmperstandToken") ||
+          (firstToken.debugType === "PipeToken" && secondToken?.debugType === "PipeToken")
+        ) {
+          eat(); // consume the second & or |
+          const operator = firstToken.debugType === "AmperstandToken" ? "&&" : "||";
+          const right = parseExpression(precedence + 1);
+          left = {
+            debugType: "BinaryExpressionASTNode",
+            left,
+            right,
+            operator,
+          };
+          continue;
+        } else {
+          throw new Error(`Unexpected token ${firstToken.debugType}`);
+        }
+      }
+
+      // Handle other single-token operators
       if (
-        !nextToken ||
         ![
           "AddOperationToken",
           "SubOperationToken",
           "MulOperationToken",
           "DivOperationToken",
           "PercentOperationToken",
-          "LessThanToken",
-          "GreaterThanToken",
         ].includes(nextToken.debugType)
       ) {
         break;
       }
-      const operator = eat() as OperationToken;
+
+      const operator = (eat() as OperationToken).raw;
       const right = parseExpression(precedence + 1);
       left = {
         debugType: "BinaryExpressionASTNode",
         left,
         right,
-        operator: operator.raw,
+        operator,
       };
     }
 

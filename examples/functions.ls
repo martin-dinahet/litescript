@@ -1,1 +1,7 @@
-const a = 5 >= 3;
+if (a >= b) {
+  return "triso";
+} else {
+  return "fdp";
+}
+
+
