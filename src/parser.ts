@@ -111,6 +111,33 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
           alternate,
         };
       }
+
+      case "IdentifierToken": {
+        const identifier: IdentifierASTNode = {
+          debugType: "IdentifierASTNode",
+          value: (eatSpecific(["IdentifierToken"]) as IdentifierToken).value,
+        };
+        if (peek()?.debugType === "OpenParenthesesToken") {
+          const args: Array<ASTNode> = [];
+          eatSpecific(["OpenParenthesesToken"]);
+          while (peek()?.debugType !== "CloseParenthesesToken") {
+            args.push(parseExpression());
+            if (peek()?.debugType === "CommaToken") {
+              eatSpecific(["CommaToken"]);
+            }
+          }
+          eatSpecific(["CloseParenthesesToken"]);
+          eatSpecific(["SemiColonToken"]);
+          return {
+            debugType: "FunctionCallASTNode",
+            identifier,
+            arguments: args,
+          };
+        } else {
+          return identifier;
+        }
+      }
+
       default: {
         throw new Error(`${token.debugType} Not implemented`);
       }
@@ -136,10 +163,39 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
         break;
       }
       case "IdentifierToken": {
-        left = {
-          debugType: "IdentifierASTNode",
-          value: String((token as IdentifierToken).value),
-        };
+        // Check if it's a function call (IdentifierToken followed by OpenParenthesesToken)
+        if (peek()?.debugType === "OpenParenthesesToken") {
+          const identifier: IdentifierASTNode = {
+            debugType: "IdentifierASTNode",
+            value: (token as IdentifierToken).value,
+          };
+          eatSpecific(["IdentifierToken"]); // Eat the identifier token
+          eatSpecific(["OpenParenthesesToken"]); // Eat the opening parentheses
+
+          const args: ASTNode[] = [];
+          // Parse the arguments inside the parentheses
+          if (peek()?.debugType !== "CloseParenthesesToken") {
+            do {
+              args.push(parseExpression()); // Parse each argument
+              if (peek()?.debugType === "CommaToken") {
+                eatSpecific(["CommaToken"]); // Handle the comma between arguments
+              }
+            } while (peek()?.debugType !== "CloseParenthesesToken");
+          }
+
+          eatSpecific(["CloseParenthesesToken"]); // Eat the closing parentheses
+
+          left = {
+            debugType: "FunctionCallASTNode",
+            identifier,
+            arguments: args,
+          };
+        } else {
+          left = {
+            debugType: "IdentifierASTNode",
+            value: String((token as IdentifierToken).value),
+          };
+        }
         break;
       }
       case "BooleanLiteralToken": {

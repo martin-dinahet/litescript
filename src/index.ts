@@ -24,7 +24,13 @@ const logASTNode = (node: ASTNode, indent = "") => {
   }
 };
 
-const code = "const add = (a, b) => { return a + b; };";
+const code = `
+  const add = (a, b) => {
+    return a + b;
+  };
+
+  add(3, 5);
+`;
 
 const tokens: Array<Token> = Lexer({ code });
 console.log(tokens.map((t) => `${t.debugType}`));
