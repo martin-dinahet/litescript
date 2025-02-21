@@ -45,18 +45,6 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
     let token = peek();
     if (!token) throw new Error("Unexpected end of input");
     switch (token.debugType) {
-      case "IdentifierToken": {
-        throw new Error("Not implemented");
-      }
-      case "NumberLiteralToken": {
-        throw new Error("Not implemented");
-      }
-      case "StringLiteralToken": {
-        throw new Error("Not implemented");
-      }
-      case "BooleanLiteralToken": {
-        throw new Error("Not implemented");
-      }
       case "ConstKeywordToken": {
         eatSpecific(["ConstKeywordToken"]);
         const identifier = eatSpecific(["IdentifierToken"]) as IdentifierToken;
@@ -96,147 +84,59 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
           alternate,
         };
       }
-      case "ElseKeywordToken": {
-        throw new Error("Not implemented");
-      }
-      case "AddOperationToken": {
-        throw new Error("Not implemented");
-      }
-      case "SubOperationToken": {
-        throw new Error("Not implemented");
-      }
-      case "MulOperationToken": {
-        throw new Error("Not implemented");
-      }
-      case "DivOperationToken": {
-        throw new Error("Not implemented");
-      }
-      case "PercentOperationToken": {
-        throw new Error("Not implemented");
-      }
-      case "OpenParenthesesToken": {
-        throw new Error("Not implemented");
-      }
-      case "CloseParenthesesToken": {
-        throw new Error("Not implemented");
-      }
-      case "OpenBracketsToken": {
-        throw new Error("Not implemented");
-      }
-      case "CloseBracketsToken": {
-        throw new Error("Not implemented");
-      }
-      case "OpenCurlyBracketsToken": {
-        throw new Error("Not implemented");
-      }
-      case "CloseCurlyBracketsToken": {
-        throw new Error("Not implemented");
-      }
-      case "CommaToken": {
-        throw new Error("Not implemented");
-      }
-      case "ColonToken": {
-        throw new Error("Not implemented");
-      }
-      case "SemiColonToken": {
-        throw new Error("Not implemented");
-      }
-      case "PeriodToken": {
-        throw new Error("Not implemented");
-      }
-      case "LessThanToken": {
-        throw new Error("Not implemented");
-      }
-      case "GreaterThanToken": {
-        throw new Error("Not implemented");
-      }
-      case "EqualToken": {
-        throw new Error("Not implemented");
-      }
-      case "QuestionMarkToken": {
-        throw new Error("Not implemented");
-      }
-      case "ExclamationMarkToken": {
-        throw new Error("Not implemented");
-      }
-      case "AmperstandToken": {
-        throw new Error("Not implemented");
-      }
-      case "PoundToken": {
-        throw new Error("Not implemented");
-      }
-      case "AtToken": {
-        throw new Error("Not implemented");
-      }
-      case "DollarToken": {
-        throw new Error("Not implemented");
-      }
-      case "UnderscoreToken": {
-        throw new Error("Not implemented");
-      }
-      case "PipeToken": {
+      default: {
         throw new Error("Not implemented");
       }
     }
   };
 
-  const parseExpression = (): ASTNode => {
+  const parseExpression = (precedence = 0): ASTNode => {
+    let left: ASTNode;
     let token = eat();
     switch (token.debugType) {
       case "NumberLiteralToken": {
-        return {
+        left = {
           debugType: "NumberLiteralASTNode",
           value: Number((token as NumberLiteralToken).value),
         };
+        break;
       }
       case "StringLiteralToken": {
-        return {
+        left = {
           debugType: "StringLiteralASTNode",
           value: String((token as StringLiteralToken).value),
         };
+        break;
       }
       case "IdentifierToken": {
-        return {
+        left = {
           debugType: "IdentifierASTNode",
           value: String((token as IdentifierToken).value),
         };
+        break;
       }
       case "BooleanLiteralToken": {
-        return {
+        left = {
           debugType: "BooleanLiteralASTNode",
           value: (token as BooleanLiteralToken).value === "true",
         };
-      }
-      case "ConstKeywordToken": {
-        throw new Error("Not implemented");
-      }
-      case "ReturnKeywordToken": {
-        throw new Error("Not implemented");
-      }
-      case "IfKeywordToken": {
-        throw new Error("Not implemented");
-      }
-      case "ElseKeywordToken": {
-        throw new Error("Not implemented");
-      }
-      case "AddOperationToken": {
-        throw new Error("Not implemented");
-      }
-      case "SubOperationToken": {
-        throw new Error("Not implemented");
-      }
-      case "MulOperationToken": {
-        throw new Error("Not implemented");
-      }
-      case "DivOperationToken": {
-        throw new Error("Not implemented");
-      }
-      case "PercentOperationToken": {
-        throw new Error("Not implemented");
+        break;
       }
       case "OpenParenthesesToken": {
-        const left: ASTNode = parseExpression();
-        const operator: Token = eatSpecific([
+        left = parseExpression();
+        eatSpecific(["CloseParenthesesToken"]);
+        break;
+      }
+      default: {
+        throw new Error("Not implemented");
+      }
+    }
+
+    while (true) {
+      let nextToken = peek();
+      if (
+        !nextToken ||
+        ![
           "AddOperationToken",
           "SubOperationToken",
           "MulOperationToken",
@@ -244,80 +144,21 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
           "PercentOperationToken",
           "LessThanToken",
           "GreaterThanToken",
-        ]);
-        const right: ASTNode = parseExpression();
-        eatSpecific(["CloseParenthesesToken"]);
-        return {
-          debugType: "BinaryExpressionASTNode",
-          left,
-          right,
-          operator: (operator as OperationToken).raw,
-        };
+        ].includes(nextToken.debugType)
+      ) {
+        break;
       }
-      case "CloseParenthesesToken": {
-        throw new Error("Not implemented");
-      }
-      case "OpenBracketsToken": {
-        throw new Error("Not implemented");
-      }
-      case "CloseBracketsToken": {
-        throw new Error("Not implemented");
-      }
-      case "OpenCurlyBracketsToken": {
-        throw new Error("Not implemented");
-      }
-      case "CloseCurlyBracketsToken": {
-        throw new Error("Not implemented");
-      }
-      case "CommaToken": {
-        throw new Error("Not implemented");
-      }
-      case "ColonToken": {
-        throw new Error("Not implemented");
-      }
-      case "SemiColonToken": {
-        throw new Error("Not implemented");
-      }
-      case "PeriodToken": {
-        throw new Error("Not implemented");
-      }
-      case "LessThanToken": {
-        throw new Error("Not implemented");
-      }
-      case "GreaterThanToken": {
-        throw new Error("Not implemented");
-      }
-      case "EqualToken": {
-        throw new Error("Not implemented");
-      }
-      case "QuestionMarkToken": {
-        throw new Error("Not implemented");
-      }
-      case "ExclamationMarkToken": {
-        throw new Error("Not implemented");
-      }
-      case "AmperstandToken": {
-        throw new Error("Not implemented");
-      }
-      case "PoundToken": {
-        throw new Error("Not implemented");
-      }
-      case "AtToken": {
-        throw new Error("Not implemented");
-      }
-      case "DollarToken": {
-        throw new Error("Not implemented");
-      }
-      case "UnderscoreToken": {
-        throw new Error("Not implemented");
-      }
-      case "PipeToken": {
-        throw new Error("Not implemented");
-      }
-      default: {
-        throw new Error("No token under cursor");
-      }
+      const operator = eat() as OperationToken;
+      const right = parseExpression(precedence + 1);
+      left = {
+        debugType: "BinaryExpressionASTNode",
+        left,
+        right,
+        operator: operator.raw,
+      };
     }
+
+    return left;
   };
 
   return parseProgram();
