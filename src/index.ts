@@ -3,6 +3,8 @@ import { Lexer } from "@/lexer";
 import { Parser } from "@/parser";
 import { ASTNode } from "#/node";
 
+import fs from "fs";
+
 const logASTNode = (node: ASTNode, indent = "") => {
   for (const key in node) {
     if (Object.prototype.hasOwnProperty.call(node, key)) {
@@ -24,15 +26,16 @@ const logASTNode = (node: ASTNode, indent = "") => {
   }
 };
 
-const code = `
-  const add = (a, b) => {
-    return a + b;
-  };
-
-  add(3, 5);
-`;
-
-const tokens: Array<Token> = Lexer({ code });
-console.log(tokens.map((t) => `${t.debugType}`));
-const programASTNode: ASTNode = Parser({ tokens });
-logASTNode(programASTNode);
+const filePath = process.argv[2];
+if (!filePath) {
+  throw new Error("No file path provided");
+}
+try {
+  const code = fs.readFileSync(filePath, "utf-8");
+  const tokens: Array<Token> = Lexer({ code });
+  console.log(tokens.map((t) => `${t.debugType}`));
+  const programASTNode: ASTNode = Parser({ tokens });
+  logASTNode(programASTNode);
+} catch (err) {
+  throw new Error(`Error reading file: ${err}`);
+}
