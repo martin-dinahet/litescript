@@ -1,199 +1,225 @@
-export type Token = {
-  debugType: "Token";
-};
+export type Token =
+  | IdentifierToken //
+  | LiteralToken //
+  | KeywordToken //
+  | OperationToken //
+  | SymbolToken; //
 
-/* */
-
-export type IdentifierToken = Token & {
+export type IdentifierToken = {
   value: string;
   debugType: "IdentifierToken";
 };
 
 /* */
 
-export type LiteralToken = Token & {
-  //
-};
+export type LiteralToken =
+  | NumberLiteralToken //
+  | StringLiteralToken //
+  | BooleanLiteralToken; //
 
-export type NumberLiteralToken = LiteralToken & {
+export type NumberLiteralToken = {
   value: string;
   debugType: "NumberLiteralToken";
 };
 
-export type StringLiteralToken = LiteralToken & {
+export type StringLiteralToken = {
   value: string;
   debugType: "StringLiteralToken";
 };
 
-export type BooleanLiteralToken = LiteralToken & {
+export type BooleanLiteralToken = {
   value: "true" | "false";
   debugType: "BooleanLiteralToken";
 };
 
 /* */
 
-export type KeywordToken = Token & {
-  debugType: "KeywordToken";
-};
+export type KeywordToken =
+  | ConstKeywordToken //
+  | ReturnKeywordToken //
+  | IfKeywordToken //
+  | ElseKeywordToken; //
 
-export type ConstKeywordToken = KeywordToken & {
+export type ConstKeywordToken = {
   raw: "const";
   debugType: "ConstKeywordToken";
 };
 
-export type ReturnKeywordToken = KeywordToken & {
+export type ReturnKeywordToken = {
   raw: "return";
   debugType: "ReturnKeywordToken";
 };
 
-export type IfKeywordToken = KeywordToken & {
+export type IfKeywordToken = {
   raw: "if";
   debugType: "IfKeywordToken";
 };
 
-export type ElseKeywordToken = KeywordToken & {
+export type ElseKeywordToken = {
   raw: "else";
   debugType: "ElseKeywordToken";
 };
 
 /* */
 
-export type OperationToken = Token & {
-  debugType: "OperationToken";
-};
+export type OperationToken =
+  | AddOperationToken //
+  | SubOperationToken //
+  | MulOperationToken //
+  | DivOperationToken //
+  | PercentOperationToken; //
 
-export type AddOperationToken = OperationToken & {
+export type AddOperationToken = {
   raw: "+";
   debugType: "AddOperationToken";
 };
 
-export type SubOperationToken = OperationToken & {
+export type SubOperationToken = {
   raw: "-";
   debugType: "SubOperationToken";
 };
 
-export type MulOperationToken = OperationToken & {
+export type MulOperationToken = {
   raw: "*";
   debugType: "MulOperationToken";
 };
 
-export type DivOperationToken = OperationToken & {
+export type DivOperationToken = {
   raw: "/";
   debugType: "DivOperationToken";
 };
 
-export type PercentOperationToken = OperationToken & {
+export type PercentOperationToken = {
   raw: "%";
   debugType: "PercentOperationToken";
 };
 
 /* */
 
-export type SymbolToken = Token & {
-  debugType: "SymbolToken";
-};
+export type SymbolToken =
+  | OpenParenthesesToken //
+  | CloseParenthesesToken //
+  | OpenBracketsToken //
+  | CloseBracketsToken //
+  | OpenCurlyBracketsToken //
+  | CloseCurlyBracketsToken //
+  | CommaToken //
+  | ColonToken //
+  | SemiColonToken //
+  | PeriodToken //
+  | LessThanToken //
+  | GreaterThanToken //
+  | EqualToken //
+  | QuestionMarkToken //
+  | ExclamationMarkToken //
+  | AmperstandToken //
+  | PoundToken //
+  | AtToken //
+  | DollarToken //
+  | UnderscoreToken //
+  | PipeToken; //
 
-export type OpenParenthesesToken = SymbolToken & {
+export type OpenParenthesesToken = {
   raw: "(";
   debugType: "OpenParenthesesToken";
 };
 
-export type CloseParenthesesToken = SymbolToken & {
+export type CloseParenthesesToken = {
   raw: ")";
   debugType: "CloseParenthesesToken";
 };
 
-export type OpenBracketsToken = SymbolToken & {
+export type OpenBracketsToken = {
   raw: "[";
   debugType: "OpenBracketsToken";
 };
 
-export type CloseBracketsToken = SymbolToken & {
+export type CloseBracketsToken = {
   raw: "]";
   debugType: "CloseBracketsToken";
 };
 
-export type OpenCurlyBracketsToken = SymbolToken & {
+export type OpenCurlyBracketsToken = {
   raw: "{";
   debugType: "OpenCurlyBracketsToken";
 };
 
-export type CloseCurlyBracketsToken = SymbolToken & {
+export type CloseCurlyBracketsToken = {
   raw: "}";
   debugType: "CloseCurlyBracketsToken";
 };
 
-export type CommaToken = SymbolToken & {
+export type CommaToken = {
   raw: ",";
   debugType: "CommaToken";
 };
 
-export type ColonToken = SymbolToken & {
+export type ColonToken = {
   raw: ":";
   debugType: "ColonToken";
 };
 
-export type SemiColonToken = SymbolToken & {
+export type SemiColonToken = {
   raw: ";";
   debugType: "SemiColonToken";
 };
 
-export type PeriodToken = SymbolToken & {
+export type PeriodToken = {
   raw: ".";
   debugType: "PeriodToken";
 };
 
-export type LessThanToken = SymbolToken & {
+export type LessThanToken = {
   raw: "<";
   debugType: "LessThanToken";
 };
 
-export type GreaterThanToken = SymbolToken & {
+export type GreaterThanToken = {
   raw: ">";
   debugType: "GreaterThanToken";
 };
 
-export type EqualToken = SymbolToken & {
+export type EqualToken = {
   raw: "=";
   debugType: "EqualToken";
 };
 
-export type QuestionMarkToken = SymbolToken & {
+export type QuestionMarkToken = {
   raw: "?";
   debugType: "QuestionMarkToken";
 };
 
-export type ExclamationMarkToken = SymbolToken & {
+export type ExclamationMarkToken = {
   raw: "!";
   debugType: "ExclamationMarkToken";
 };
 
-export type AmperstandToken = SymbolToken & {
+export type AmperstandToken = {
   raw: "&";
   debugType: "AmperstandToken";
 };
 
-export type PoundToken = SymbolToken & {
+export type PoundToken = {
   raw: "#";
   debugType: "PoundToken";
 };
 
-export type AtToken = SymbolToken & {
+export type AtToken = {
   raw: "@";
   debugType: "AtToken";
 };
 
-export type DollarToken = SymbolToken & {
+export type DollarToken = {
   raw: "$";
   debugType: "DollarToken";
 };
 
-export type UnderscoreToken = SymbolToken & {
+export type UnderscoreToken = {
   raw: "_";
   debugType: "UnderscoreToken";
 };
 
-export type PipeToken = SymbolToken & {
+export type PipeToken = {
   raw: "|";
   debugType: "PipeToken";
 };

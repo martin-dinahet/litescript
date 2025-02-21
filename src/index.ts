@@ -1,10 +1,11 @@
 import { Token } from "#/token";
-import { Lexer } from "./lexer";
+import { Lexer } from "@/lexer";
+import { Parser } from "@/parser";
+import { ASTNode } from "#/node";
 
-const source = `
-  const add = (a: number, b: number): number => {
-    return a + b;
-  };
-`;
+const code = "const a = (5 + 3);";
 
-console.log(Lexer({ code: source }).map((token: Token) => token.debugType));
+const tokens: Array<Token> = Lexer({ code });
+console.log(tokens.map((t) => `${t.debugType}`));
+const programASTNode: ASTNode = Parser({ tokens });
+console.log(programASTNode);

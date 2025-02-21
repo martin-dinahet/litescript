@@ -37,17 +37,13 @@ type LexerTypeDefinition = (params: { code: string }) => Array<Token>;
 export const Lexer: LexerTypeDefinition = ({ code }) => {
   const source: Array<string> = code.split("");
   const tokens: Array<Token> = [];
-  let cursor: string | null = source[0];
+  let cursor: string | null = null;
   let buffer: string = "";
   let string: string = "";
   let quotes: boolean = false;
 
   const eat = () => {
     cursor = source.shift() ?? null;
-  };
-
-  const isOver = () => {
-    return cursor ? false : true;
   };
 
   const dumpString = () => {
@@ -76,7 +72,8 @@ export const Lexer: LexerTypeDefinition = ({ code }) => {
     buffer = "";
   };
 
-  while (!isOver()) {
+  eat();
+  while (cursor) {
     if (cursor === '"' && !quotes) {
       quotes = true;
       eat();
@@ -94,190 +91,188 @@ export const Lexer: LexerTypeDefinition = ({ code }) => {
       continue;
     }
     if (cursor !== '"' && !quotes) {
-      if (cursor !== null) {
-        switch (cursor) {
-          case "\n": {
-            dumpBuffer();
-            eat();
-            continue;
-          }
-          case "\t": {
-            dumpBuffer();
-            eat();
-            continue;
-          }
-          case " ": {
-            dumpBuffer();
-            eat();
-            continue;
-          }
-          case "+": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "+", debugType: "AddOperationToken" } as AddOperationToken);
-            continue;
-          }
-          case "-": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "-", debugType: "SubOperationToken" } as SubOperationToken);
-            continue;
-          }
-          case "*": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "*", debugType: "MulOperationToken" } as MulOperationToken);
-            continue;
-          }
-          case "/": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "/", debugType: "DivOperationToken" } as DivOperationToken);
-            continue;
-          }
-          case "%": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "%", debugType: "PercentOperationToken" } as PercentOperationToken);
-            continue;
-          }
-          case "(": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "(", debugType: "OpenParenthesesToken" } as OpenParenthesesToken);
-            continue;
-          }
-          case ")": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: ")", debugType: "CloseParenthesesToken" } as CloseParenthesesToken);
-            continue;
-          }
-          case "[": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "[", debugType: "OpenBracketsToken" } as OpenBracketsToken);
-            continue;
-          }
-          case "]": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "]", debugType: "CloseBracketsToken" } as CloseBracketsToken);
-            continue;
-          }
-          case "{": {
-            dumpBuffer();
-            eat();
-            tokens.push({
-              raw: "{",
-              debugType: "OpenCurlyBracketsToken",
-            } as OpenCurlyBracketsToken);
-            continue;
-          }
-          case "}": {
-            dumpBuffer();
-            eat();
-            tokens.push({
-              raw: "}",
-              debugType: "CloseCurlyBracketsToken",
-            } as CloseCurlyBracketsToken);
-            continue;
-          }
-          case ",": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: ",", debugType: "CommaToken" } as CommaToken);
-            continue;
-          }
-          case ":": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: ":", debugType: "ColonToken" } as ColonToken);
-            continue;
-          }
-          case ";": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: ";", debugType: "SemiColonToken" } as SemiColonToken);
-            continue;
-          }
-          case ".": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: ".", debugType: "PeriodToken" } as PeriodToken);
-            continue;
-          }
-          case "<": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "<", debugType: "LessThanToken" } as LessThanToken);
-            continue;
-          }
-          case ">": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: ">", debugType: "GreaterThanToken" } as GreaterThanToken);
-            continue;
-          }
-          case "=": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "=", debugType: "EqualToken" } as EqualToken);
-            continue;
-          }
-          case "?": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "?", debugType: "QuestionMarkToken" } as QuestionMarkToken);
-            continue;
-          }
-          case "!": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "!", debugType: "ExclamationMarkToken" } as ExclamationMarkToken);
-            continue;
-          }
-          case "&": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "&", debugType: "AmperstandToken" } as AmperstandToken);
-            continue;
-          }
-          case "#": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "#", debugType: "PoundToken" } as PoundToken);
-            continue;
-          }
-          case "@": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "@", debugType: "AtToken" } as AtToken);
-            continue;
-          }
-          case "$": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "$", debugType: "DollarToken" } as DollarToken);
-            continue;
-          }
-          case "_": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "_", debugType: "UnderscoreToken" } as UnderscoreToken);
-            continue;
-          }
-          case "|": {
-            dumpBuffer();
-            eat();
-            tokens.push({ raw: "|", debugType: "PipeToken" } as PipeToken);
-            continue;
-          }
-          default: {
-            buffer += cursor;
-            eat();
-            continue;
-          }
+      switch (cursor) {
+        case "\n": {
+          dumpBuffer();
+          eat();
+          continue;
+        }
+        case "\t": {
+          dumpBuffer();
+          eat();
+          continue;
+        }
+        case " ": {
+          dumpBuffer();
+          eat();
+          continue;
+        }
+        case "+": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "+", debugType: "AddOperationToken" } as AddOperationToken);
+          continue;
+        }
+        case "-": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "-", debugType: "SubOperationToken" } as SubOperationToken);
+          continue;
+        }
+        case "*": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "*", debugType: "MulOperationToken" } as MulOperationToken);
+          continue;
+        }
+        case "/": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "/", debugType: "DivOperationToken" } as DivOperationToken);
+          continue;
+        }
+        case "%": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "%", debugType: "PercentOperationToken" } as PercentOperationToken);
+          continue;
+        }
+        case "(": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "(", debugType: "OpenParenthesesToken" } as OpenParenthesesToken);
+          continue;
+        }
+        case ")": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: ")", debugType: "CloseParenthesesToken" } as CloseParenthesesToken);
+          continue;
+        }
+        case "[": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "[", debugType: "OpenBracketsToken" } as OpenBracketsToken);
+          continue;
+        }
+        case "]": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "]", debugType: "CloseBracketsToken" } as CloseBracketsToken);
+          continue;
+        }
+        case "{": {
+          dumpBuffer();
+          eat();
+          tokens.push({
+            raw: "{",
+            debugType: "OpenCurlyBracketsToken",
+          } as OpenCurlyBracketsToken);
+          continue;
+        }
+        case "}": {
+          dumpBuffer();
+          eat();
+          tokens.push({
+            raw: "}",
+            debugType: "CloseCurlyBracketsToken",
+          } as CloseCurlyBracketsToken);
+          continue;
+        }
+        case ",": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: ",", debugType: "CommaToken" } as CommaToken);
+          continue;
+        }
+        case ":": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: ":", debugType: "ColonToken" } as ColonToken);
+          continue;
+        }
+        case ";": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: ";", debugType: "SemiColonToken" } as SemiColonToken);
+          continue;
+        }
+        case ".": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: ".", debugType: "PeriodToken" } as PeriodToken);
+          continue;
+        }
+        case "<": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "<", debugType: "LessThanToken" } as LessThanToken);
+          continue;
+        }
+        case ">": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: ">", debugType: "GreaterThanToken" } as GreaterThanToken);
+          continue;
+        }
+        case "=": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "=", debugType: "EqualToken" } as EqualToken);
+          continue;
+        }
+        case "?": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "?", debugType: "QuestionMarkToken" } as QuestionMarkToken);
+          continue;
+        }
+        case "!": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "!", debugType: "ExclamationMarkToken" } as ExclamationMarkToken);
+          continue;
+        }
+        case "&": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "&", debugType: "AmperstandToken" } as AmperstandToken);
+          continue;
+        }
+        case "#": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "#", debugType: "PoundToken" } as PoundToken);
+          continue;
+        }
+        case "@": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "@", debugType: "AtToken" } as AtToken);
+          continue;
+        }
+        case "$": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "$", debugType: "DollarToken" } as DollarToken);
+          continue;
+        }
+        case "_": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "_", debugType: "UnderscoreToken" } as UnderscoreToken);
+          continue;
+        }
+        case "|": {
+          dumpBuffer();
+          eat();
+          tokens.push({ raw: "|", debugType: "PipeToken" } as PipeToken);
+          continue;
+        }
+        default: {
+          buffer += cursor;
+          eat();
+          continue;
         }
       }
     }
