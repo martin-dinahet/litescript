@@ -1,4 +1,4 @@
-import { ASTNode, IdentifierASTNode } from "#/node";
+import { ASTNode, IdentifierASTNode, ProgramASTNode } from "#/node";
 import {
   BooleanLiteralToken,
   IdentifierToken,
@@ -8,7 +8,7 @@ import {
   Token,
 } from "#/token";
 
-type ParserTypeDefinition = (params: { tokens: Array<Token> }) => ASTNode;
+type ParserTypeDefinition = (params: { tokens: Array<Token> }) => ProgramASTNode;
 export const Parser: ParserTypeDefinition = ({ tokens }) => {
   let current = 0;
 
@@ -30,7 +30,7 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
     throw new Error(`Error: expected token ${debugType}, got ${t.debugType}`);
   };
 
-  const parseProgram = (): ASTNode => {
+  const parseProgram = (): ProgramASTNode => {
     const body: Array<ASTNode> = [];
     while (current < tokens.length) {
       body.push(parseStatement());
