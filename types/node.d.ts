@@ -68,8 +68,8 @@ export type ReturnStatementASTNode = {
 export type ConditionalStatementASTNode = {
   debugType: "ConditionalStatementASTNode";
   test: ASTNode;
-  consequent: ASTNode;
-  alternate?: ASTNode;
+  consequent: Array<ASTNode>;
+  alternate?: Array<ASTNode>;
 };
 
 export type FunctionExpressionASTNode = {

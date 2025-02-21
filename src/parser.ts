@@ -98,12 +98,25 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
         eatSpecific(["OpenParenthesesToken"]);
         const test: ASTNode = parseExpression();
         eatSpecific(["CloseParenthesesToken"]);
-        const consequent: ASTNode = parseStatement();
-        let alternate: ASTNode | undefined;
+
+        eatSpecific(["OpenCurlyBracketsToken"]);
+        const consequent: ASTNode[] = [];
+        while (peek()?.debugType !== "CloseCurlyBracketsToken" && current < tokens.length) {
+          consequent.push(parseStatement());
+        }
+        eatSpecific(["CloseCurlyBracketsToken"]);
+
+        let alternate: ASTNode[] | undefined;
         if (peek()?.debugType === "ElseKeywordToken") {
           eatSpecific(["ElseKeywordToken"]);
-          alternate = parseStatement();
+          eatSpecific(["OpenCurlyBracketsToken"]);
+          alternate = [];
+          while (peek()?.debugType !== "CloseCurlyBracketsToken" && current < tokens.length) {
+            alternate.push(parseStatement());
+          }
+          eatSpecific(["CloseCurlyBracketsToken"]);
         }
+
         return {
           debugType: "ConditionalStatementASTNode",
           test,
