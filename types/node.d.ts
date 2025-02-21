@@ -5,7 +5,8 @@ export type ASTNode =
   | BinaryExpressionASTNode //
   | VariableDeclarationASTNode //
   | ReturnStatementASTNode //
-  | ConditionalStatementASTNode; //
+  | ConditionalStatementASTNode //
+  | FunctionExpressionASTNode; //
 
 /* */
 
@@ -68,4 +69,10 @@ export type ConditionalStatementASTNode = {
   test: ASTNode;
   consequent: ASTNode;
   alternate?: ASTNode;
+};
+
+export type FunctionExpressionASTNode = {
+  debugType: "FunctionExpressionASTNode";
+  parameters: Array<IdentifierASTNode>;
+  body: Array<ASTNode>;
 };

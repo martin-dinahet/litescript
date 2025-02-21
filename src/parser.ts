@@ -1,4 +1,4 @@
-import { ASTNode } from "#/node";
+import { ASTNode, IdentifierASTNode } from "#/node";
 import {
   BooleanLiteralToken,
   IdentifierToken,
@@ -49,7 +49,34 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
         eatSpecific(["ConstKeywordToken"]);
         const identifier = eatSpecific(["IdentifierToken"]) as IdentifierToken;
         eatSpecific(["EqualToken"]);
-        const value: ASTNode = parseExpression();
+        let value: ASTNode;
+        if (peek()?.debugType === "OpenParenthesesToken") {
+          eatSpecific(["OpenParenthesesToken"]);
+          const parameters: Array<IdentifierASTNode> = [];
+          while (peek()?.debugType === "IdentifierToken") {
+            const param = eatSpecific(["IdentifierToken"]) as IdentifierToken;
+            parameters.push({ debugType: "IdentifierASTNode", value: param.value });
+            if (peek()?.debugType === "CommaToken") {
+              eatSpecific(["CommaToken"]);
+            }
+          }
+          eatSpecific(["CloseParenthesesToken"]);
+          eatSpecific(["EqualToken"]);
+          eatSpecific(["GreaterThanToken"]);
+          const body: Array<ASTNode> = [];
+          eatSpecific(["OpenCurlyBracketsToken"]);
+          while (peek()?.debugType !== "CloseCurlyBracketsToken" && current < tokens.length) {
+            body.push(parseStatement());
+          }
+          eatSpecific(["CloseCurlyBracketsToken"]);
+          value = {
+            debugType: "FunctionExpressionASTNode",
+            parameters,
+            body,
+          };
+        } else {
+          value = parseExpression();
+        }
         eatSpecific(["SemiColonToken"]);
         return {
           debugType: "VariableDeclarationASTNode",
@@ -85,7 +112,7 @@ export const Parser: ParserTypeDefinition = ({ tokens }) => {
         };
       }
       default: {
-        throw new Error("Not implemented");
+        throw new Error(`${token.debugType} Not implemented`);
       }
     }
   };
